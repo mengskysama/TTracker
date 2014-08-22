@@ -3,11 +3,6 @@
 
 from twisted.web.resource import Resource
 
-import HashTableNew
-import json
-
-import Config
-
 class Static(Resource):
     isLeaf = True
 

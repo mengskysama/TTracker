@@ -2,12 +2,10 @@
 # -*- coding: utf-8 -*-
 
 from twisted.web.resource import Resource
-from twisted.internet import address
 
 import bencode
 import HashTableNew
 import time
-import random
 import logging
 
 import Config

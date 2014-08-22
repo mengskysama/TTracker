@@ -3,27 +3,7 @@
 
 from twisted.web.resource import Resource
 
-import platform
-if platform.system() == 'Windows':
-    from twisted.internet import iocpreactor
-    try:
-        #need http://sourceforge.net/projects/pywin32/
-        iocpreactor.install()
-    except:
-        pass
-else:
-    from twisted.internet import epollreactor
-    try:
-        epollreactor.install()
-    except:
-        pass
-
-import bencode
-import HashTableNew
 import json
-
-import Config
-
 from HashTableNew import HashTable
 
 class Dump(Resource):
