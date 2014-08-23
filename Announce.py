@@ -62,16 +62,14 @@ class Announce(Resource):
             return default
 
     def render_GET(self, request):
-
         HashTableNew.HashTable.do_clean_up()
-
+        #print request.uri
         start = time.clock()
-
         #ipv6ip = None
         client = request.client
-
         if isinstance(client, address.IPv4Address):
             socketIp = client.host
+
         #notice if use ipv6 couldn't get real ipv4 ip
         #elif isinstance(client, address.IPv6Address):
         #    ipv6ip = client.host
@@ -111,8 +109,10 @@ class Announce(Resource):
             return bencode_faild_str('Valid port')
         if ip is not None and len(ip) > 15:
             return bencode_faild_str('Valid ip')
-        if ipv6ip is not None and len(ipv6ip) > 47:
-            return bencode_faild_str('Valid ipv6ip')
+            ip = None
+        if ipv6ip is not None and len(ipv6ip) > 37:
+            #[0000:0000:0000:0000:0000:0000]:00000
+            ipv6ip = None
 
         downloaded = self.str2long(downloaded)
         uploaded = self.str2long(uploaded)
@@ -137,12 +137,13 @@ class Announce(Resource):
                 pos = ipv6ip.find(']:')
                 if pos != -1:
                     #[::]:0
-                    ipv6port = ipv6port[pos+2]
+                    ipv6port = ipv6ip[pos+2:]
                     ipv6ip = ipv6ip[0:pos+1]
                 else:
                     #[::]
-                    ipv6ip = port
+                    ipv6port = port
             else:
+                #::
                 ipv6ip = '[' + ipv6ip + ']'
                 ipv6port = port
 
@@ -157,16 +158,16 @@ class Announce(Resource):
         if event is None or event == '':
             #some client event=&
             p = HashTable.update_peer_by_peer_id_and_info_hash(peer_id, info_hash)
-            p.update(socketIp, ip, ipv6ip, port, peer_id, info_hash, downloaded, uploaded, left, event, passkey)
+            p.update(socketIp, ip, ipv6ip, port, ipv6port, peer_id, info_hash, downloaded, uploaded, left, event, passkey)
         if event == 'completed':
             p = HashTable.find_peer_by_peer_id_and_info_hash(peer_id, info_hash)
             HashTable.add_completed_by_info_hash(info_hash)
             p = HashTable.update_peer_by_peer_id_and_info_hash(peer_id, info_hash)
-            p.update(socketIp, ip, ipv6ip, port, peer_id, info_hash, downloaded, uploaded, left, event, passkey)
+            p.update(socketIp, ip, ipv6ip, port, ipv6port, peer_id, info_hash, downloaded, uploaded, left, event, passkey)
         if event == 'started':
             #pt need process something else
             p = HashTable.update_peer_by_peer_id_and_info_hash(peer_id, info_hash)
-            p.update(socketIp, ip, ipv6ip, port, peer_id, info_hash, downloaded, uploaded, left, event, passkey)
+            p.update(socketIp, ip, ipv6ip, port, ipv6port, peer_id, info_hash, downloaded, uploaded, left, event, passkey)
             p.uploaded_first = uploaded
             p.downloaded_first = downloaded
             p.left_first = left
@@ -180,12 +181,12 @@ class Announce(Resource):
             peers = self.GeneratePeerListNew(peers, numwant, ret_ipv6)
 
         peers_cnt = HashTable.get_torrent_peers_count(info_hash)
-        leechers_cnt = HashTable.get_torrent_peers_count(info_hash)
+        leechers_cnt = HashTable.get_torrent_leechers_count(info_hash)
         seeders_cnt = peers_cnt - leechers_cnt
 
         ret = {
-            "interval":     1800,
-            "min_interval": 15,
+            "interval":     Config.INTERVAL,
+            "min interval": 15,
             "complete":     seeders_cnt,
             "incomplete":   leechers_cnt,
             "peers":        peers,

@@ -24,6 +24,8 @@ from twisted.internet import reactor
 import logging
 logging.basicConfig(level=logging.DEBUG)
 
+import Config
+
 from Announce import Announce
 from Status import Status
 from Dump import Dump
@@ -38,5 +40,5 @@ root.putChild("dump", Dump())
 root.putChild("", Static())
 
 factory = Site(root)
-reactor.listenTCP(8880, factory)
+reactor.listenTCP(Config.LISTEN_PORT, factory)
 reactor.run()

@@ -54,6 +54,7 @@ class HashTable:
                     if HashTable.dict_by_info_hash[info_hash][peer_id].last_keep_time < cleanup_time_before:
                         HashTable.dict_by_info_hash[info_hash].pop(peer_id)
             end = time.clock()
+            Config.cleanup_time_query_at = end-start
             logging.debug('cleanup done... at:%lf' % (end-start))
 
     @staticmethod
@@ -65,7 +66,7 @@ class HashTable:
         peers = HashTable.find_peers_by_info_hash(info_hash)
         n = 0
         for peer in peers:
-            if peer.is_completed:
+            if peers[peer].is_completed:
                 n += 1
         return n
 

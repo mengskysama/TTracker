@@ -10,6 +10,7 @@ class Peer():
         self.ip = None
         self.ipv6ip = None
         self.port = None
+        self.ipv6port = None
         #self.peer_id = None
         #self.info_hash = None
         self.downloaded_first = self.downloaded = None
@@ -20,11 +21,12 @@ class Peer():
         self.is_completed = False
         #self.passkey = None
 
-    def update(self, socketip, ip, ipv6ip, port, peer_id, info_hash, downloaded, uploaded, left, event, passkey=None):
+    def update(self, socketip, ip, ipv6ip, port, ipv6port, peer_id, info_hash, downloaded, uploaded, left, event, passkey=None):
         self.socketip = socketip
         self.ip = ip
         self.ipv6ip = ipv6ip
         self.port = port
+        self.ipv6port = ipv6port
         #self.peer_id = peer_id
         #self.info_hash = info_hash
         self.downloaded = downloaded
