@@ -62,7 +62,7 @@ class HashTable:
         return len(HashTable.dict_by_info_hash)
 
     @staticmethod
-    def get_torrent_leechers_count(info_hash):
+    def get_torrent_seeders_count(info_hash):
         peers = HashTable.find_peers_by_info_hash(info_hash)
         n = 0
         for peer in peers:

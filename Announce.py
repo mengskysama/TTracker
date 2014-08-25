@@ -181,8 +181,8 @@ class Announce(Resource):
             peers = self.GeneratePeerListNew(peers, numwant, ret_ipv6)
 
         peers_cnt = HashTable.get_torrent_peers_count(info_hash)
-        leechers_cnt = HashTable.get_torrent_leechers_count(info_hash)
-        seeders_cnt = peers_cnt - leechers_cnt
+        seeders_cnt = HashTable.get_torrent_seeders_count(info_hash)
+        leechers_cnt = peers_cnt - seeders_cnt
 
         ret = {
             "interval":     Config.INTERVAL,

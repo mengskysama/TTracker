@@ -32,8 +32,8 @@ class Scrape(Resource):
         ret = {}
         for info_hash in info_hash_lst:
             peers_cnt = HashTable.get_torrent_peers_count(info_hash)
-            leechers_cnt = HashTable.get_torrent_leechers_count(info_hash)
-            seeders_cnt = peers_cnt - leechers_cnt
+            seeders_cnt = HashTable.get_torrent_seeders_count(info_hash)
+            leechers_cnt = peers_cnt - seeders_cnt
             completed_cnt = HashTable.get_completed_by_info_hash(info_hash)
             info_table = {"complete": seeders_cnt, "downloaded": completed_cnt, "incomplete": leechers_cnt}
             ret.update({info_hash:info_table})
