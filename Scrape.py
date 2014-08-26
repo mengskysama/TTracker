@@ -44,4 +44,3 @@ class Scrape(Resource):
         logging.debug('process scrape query at:%lf' % (end-start))
         Config.process_scrape_query_at = end-start
         return ret
-

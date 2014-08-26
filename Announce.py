@@ -19,7 +19,7 @@ def bencode_faild_str(str):
 class Announce(Resource):
     isLeaf = True
 
-    def GeneratePeerListNew(self, peers, numwant, ret_ipv6):
+    def generate_peer_list(self, peers, numwant, ret_ipv6):
         #get random pees
         #force no compact
         if len(peers) <= numwant:
@@ -108,7 +108,7 @@ class Announce(Resource):
         if len(port) > 5:
             return bencode_faild_str('Valid port')
         if ip is not None and len(ip) > 15:
-            return bencode_faild_str('Valid ip')
+            #return bencode_faild_str('Valid ip')
             ip = None
         if ipv6ip is not None and len(ipv6ip) > 37:
             #[0000:0000:0000:0000:0000:0000]:00000
@@ -134,7 +134,7 @@ class Announce(Resource):
         #bep_0007
         if ipv6ip is not None:
             if ipv6ip[0] == '[':
-                pos = ipv6ip.find(']:')
+                pos = ipv6ip.rfind(']:')
                 if pos != -1:
                     #[::]:0
                     ipv6port = ipv6ip[pos+2:]
@@ -175,10 +175,10 @@ class Announce(Resource):
             HashTable.remove_peer_by_peer_id_and_info_hash(peer_id, info_hash)
 
         if event == 'stopped':
-            peers = []
+            peers = ''
         else:
             peers = HashTable.find_peers_by_info_hash(info_hash)
-            peers = self.GeneratePeerListNew(peers, numwant, ret_ipv6)
+            peers = self.generate_peer_list(peers, numwant, ret_ipv6)
 
         peers_cnt = HashTable.get_torrent_peers_count(info_hash)
         seeders_cnt = HashTable.get_torrent_seeders_count(info_hash)
@@ -194,7 +194,7 @@ class Announce(Resource):
 
         ret = bencode.bencode(ret)
         end = time.clock()
-        logging.debug('process query at:%lf' % (end-start))
+        logging.debug('process announce query at:%lf' % (end-start))
         Config.process_announce_query_at = end-start
         return ret
 
