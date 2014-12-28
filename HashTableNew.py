@@ -55,6 +55,7 @@ class HashTable:
                         HashTable.dict_by_info_hash[info_hash].pop(peer_id)
             end = time.clock()
             Config.cleanup_time_query_at = end-start
+            HashTable.last_cleanup_time = time.time()
             logging.debug('cleanup done... at:%lf' % (end-start))
 
     @staticmethod
