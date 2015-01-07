@@ -39,6 +39,6 @@ root.putChild("status", Status())
 root.putChild("dump", Dump())
 root.putChild("", Static())
 
-factory = Site(root)
+factory = Site(root, timeout = 30)
 reactor.listenTCP(Config.LISTEN_PORT, factory)
 reactor.run()
